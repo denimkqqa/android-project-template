@@ -31,7 +31,7 @@ init() {
 	mkdir res/values
 	mkdir res/drawable
 	
-	sed "s/{{ PACKAGE_NAME }}/${PACKAGE_NAME}/" "template_files/MainActivity.java" > "$PACKAGE_DIR/MainActivity.java"
+	sed "s/{{ PACKAGE_NAME }}/${PACKAGE_NAME}/" "template_files/MainActivity.java" > "src/$PACKAGE_DIR/MainActivity.java"
 	sed "s/{{ PACKAGE_NAME }}/${PACKAGE_NAME}/" "template_files/AndroidManifest.xml" > "AndroidManifest.xml"
 	sed "s/{{ APP_NAME }}/${APP_NAME}/" "template_files/strings.xml" > "res/values/strings.xml"
 	cp "template_files/activity_main.xml" "res/layout/activity_main.xml"
@@ -39,6 +39,7 @@ init() {
 }
 
 build() {
+	rm -rf build/
 	mkdir build
 	mkdir build/outputResources
 	mkdir build/out
