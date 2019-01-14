@@ -43,7 +43,7 @@ build() {
 	mkdir build
 	mkdir build/outputResources
 	mkdir build/out
-	mkdir build/classses
+	mkdir build/classes
 	mkdir build/out/dex
 	
 	echo "Compiling resources"
