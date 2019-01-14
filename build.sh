@@ -77,7 +77,9 @@ build() {
 	$DX build/classes/$PACKAGE_DIR/*.class --output build/out/dex
 
 	echo "Adding classes to resources APK..."
-	zip build/out/resources.apk build/out/dex/classes.dex
+	cp build/out/dex/classes.dex classes.dex
+	zip build/out/resources.apk classes.dex
+	rm classes.dex
 
 	echo "Aligning and signing APK..."
 	$APKSIGNER sign --ks debug.keystore --ks-pass "pass:123456" build/out/resources.apk
