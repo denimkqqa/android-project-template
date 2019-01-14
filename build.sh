@@ -25,7 +25,7 @@ APKSIGNER=$BUILD_TOOLS/apksigner
 init() {
 	rm -rf .git README.md
 	echo "Making ${PACKAGE_NAME}..."
-	mkdir -p "$PACKAGE_DIR"
+	mkdir -p "src/$PACKAGE_DIR"
 	mkdir bin
 	mkdir -p res/layout
 	mkdir res/values
