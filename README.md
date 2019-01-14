@@ -7,18 +7,18 @@ In order to use this script following actions required:
 In order to reproduce it with docker (probably easiest way) following steps are required:
 ```
 $ docker run -it --user root  thedrhax/android-sdk bash
+
 $ git clone https://github.com/denimkqqa/android-project-template 
 $ cd https://github.com/denimkqqa/android-project-template
 
-
-$ bash init_defaults.sh
+$ ./init_defaults.sh
 
 $ export BUILD_TOOLS="/home/user/android-sdk-linux/build-tools/28.0.1/"
 
 $ export PLATFORM="/home/user/android-sdk-linux/platforms/android-28/android.jar"
 
-$ bash build.sh init test
-$ bash build.sh build test
+$ ./build.sh init test
+$ ./build.sh build test
 ```
 
 In order to copy apk from docker (if needed) following commands should be executed from another shell window:
