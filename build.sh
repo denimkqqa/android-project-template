@@ -17,17 +17,15 @@ set -e
 APP_NAME="Your App Name"
 PACKAGE_NAME="your.pkg.name"
 
-AAPT="/path/to/android-sdk/build-tools/<your version>/aapt"
-DX="/path/to/android-sdk/build-tools/<your version>/dx"
-ZIPALIGN="/path/to/android-sdk/build-tools/<your version>/zipalign"
-APKSIGNER="/path/to/android-sdk/build-tools/<your version>/apksigner"
-PLATFORM="/path/to/android-sdk/platforms/android-<your version>/android.jar"
+AAPT=$BUILD_TOOLS/aapt2
+DX=$BUILD_TOOLS/d8
+ZIPALIGN=$BUILD_TOOLS/zipalign
+APKSIGNER=$BUILD_TOOLS/apksigner
 
 init() {
 	rm -rf .git README.md
 	echo "Making ${PACKAGE_NAME}..."
 	mkdir -p "$PACKAGE_DIR"
-	mkdir obj
 	mkdir bin
 	mkdir -p res/layout
 	mkdir res/values
@@ -41,35 +39,67 @@ init() {
 }
 
 build() {
-	echo "Cleaning..."
-	rm -rf obj/*
-	rm -rf "$PACKAGE_DIR/R.java"
+	mkdir build
+	mkdir build/outputResources
+	mkdir build/out
+	mkdir build/classses
+	mkdir build/out/dex
+	
+	echo "Compiling resources"
+	$AAPT compile -o build/outputResources res/*/*  -v
+	ls -d -1 $PWD/build/outputResources/*.* | awk 1 ORS=' ' > build/r_files.txt
+	
+	echo "Linking resouces..."
+	$AAPT link -I\
+          $PLATFORM\
+          --manifest\
+          AndroidManifest.xml\
+          -o\
+          build/out/resources.apk\
+          -R\
+          @build/r_files.txt\
+          --auto-add-overlay\
+          --java\
+          build/r\
+          --custom-package\
+          $PACKAGE_NAME\
+          -0\
+          apk\
+          --output-text-symbols\
+          build/R.txt\
+          --no-version-vectors
 
-	echo "Generating R.java file..."
-	$AAPT package -f -m -J src -M AndroidManifest.xml -S res -I $PLATFORM
-
-	echo "Compiling..."
-	ant compile -Dplatform=$PLATFORM
+	echo "Compiling code..."
+	javac -cp $PLATFORM build/r/$PACKAGE_DIR/*.java src/$PACKAGE_DIR/*.java -d build/classes
 
 	echo "Translating in Dalvik bytecode..."
-	$DX --dex --output=classes.dex obj
+	$DX build/classes/$PACKAGE_DIR/*.class --output build/out/dex
 
-	echo "Making APK..."
-	$AAPT package -f -m -F bin/app.unaligned.apk -M AndroidManifest.xml -S res -I $PLATFORM
-	$AAPT add bin/app.unaligned.apk classes.dex
+	echo "Adding classes to resources APK..."
+	zip build/out/resources.apk build/out/dex/classes.dex
 
 	echo "Aligning and signing APK..."
-	$APKSIGNER sign --ks debug.keystore --ks-pass "pass:123456" bin/app.unaligned.apk
-	$ZIPALIGN -f 4 bin/app.unaligned.apk bin/app.apk
+	$APKSIGNER sign --ks debug.keystore --ks-pass "pass:123456" build/out/resources.apk
+	$ZIPALIGN -f 4 build/out/resources.apk build/app.apk
 }
 
 run() {
 	echo "Launching..."
-	adb install -r bin/app.apk
+	adb install -r bin/app.apk 
 	adb shell am start -n "${PACKAGE_NAME}/.MainActivity"
 }
 
-PACKAGE_DIR="src/$(echo ${PACKAGE_NAME} | sed 's/\./\//g')"
+if [[ -z "$BUILD_TOOLS" ]]; then
+    echo "Please specify BUILD_TOOLS env variable"
+    exit -1
+fi
+
+if [[ -z "$PLATFORM" ]]; then
+    echo "Please specify PLATFORM env variable"
+    exit -1
+fi
+
+PACKAGE_DIR="$(echo ${PACKAGE_NAME} | sed 's/\./\//g')"
 
 case $1 in
 	init)
