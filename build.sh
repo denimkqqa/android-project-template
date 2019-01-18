@@ -91,7 +91,9 @@ build() {
           --no-version-vectors
 
 	echo "Compiling code..."
+	javac -cp $classpath build/r/com/example/android/helloworld/R.java -d build/classes
 	kotlinc -cp $classpath build/r/com/example/android/helloworld/R.java app/src/main/java/com/example/android/helloworld/MainActivity.kt -d build/classes
+	
 	echo "Translating in Dalvik bytecode..."
 	$DX build/classes/$PACKAGE_DIR/*.class --output build/out/dex
 
