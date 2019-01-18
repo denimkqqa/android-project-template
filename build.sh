@@ -57,7 +57,7 @@ build() {
 	done
 
 
-	#workaround for merging values (no comand line tools for manual merging)
+	echo "workaround for merging values (as no comand line tools for manual merging)"
 	./gradlew mergeDebugResources
 
 	echo "Compiling resources"
@@ -101,9 +101,20 @@ build() {
 	rm classes.dex
 
 	echo "Aligning and signing APK..."
-	$APKSIGNER sign --ks debug.keystore --ks-pass "pass:123456" build/out/resources.apk
+	$APKSIGNER sign --ks $ANDROID_HOME/debug.keystore --ks-pass "pass:123456" build/out/resources.apk
 	$ZIPALIGN -f 4 build/out/resources.apk build/app.apk
 }
+
+if [[ -z "$BUILD_TOOLS" ]]; then
+    echo "Please specify BUILD_TOOLS env variable"
+    exit -1
+fi
+
+if [[ -z "$PLATFORM" ]]; then
+    echo "Please specify PLATFORM env variable"
+    exit -1
+fi
+
 PACKAGE_DIR="$(echo ${PACKAGE_NAME} | sed 's/\./\//g')"
 build
 

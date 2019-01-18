@@ -9,7 +9,7 @@ In order to reproduce it with docker (probably easiest way) following steps are 
 docker run -it --user root  thedrhax/android-sdk bash
 
 git clone https://github.com/denimkqqa/android-project-template 
-cd https://github.com/denimkqqa/android-project-template
+cd android-project-template
 
 ./init_defaults.sh
 
@@ -17,8 +17,8 @@ export BUILD_TOOLS="/home/user/android-sdk-linux/build-tools/28.0.1/"
 export PLATFORM="/home/user/android-sdk-linux/platforms/android-28/android.jar"
 
 alias build_apk=$PWD/build.sh 
-unzip HelloWorld -d /home/user/HelloWorld
-cd /home/user/HelloWorldHelloWorld
+unzip HelloWorld -d /home/user/
+cd /home/user/HelloWorld
 
 build_apk
 ```
