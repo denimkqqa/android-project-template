@@ -13,6 +13,7 @@ cd android-project-template
 
 ./init_defaults.sh
 
+source "/root/.sdkman/bin/sdkman-init.sh"
 export BUILD_TOOLS="/home/user/android-sdk-linux/build-tools/28.0.1/"
 export PLATFORM="/home/user/android-sdk-linux/platforms/android-28/android.jar"
 
