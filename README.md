@@ -16,9 +16,10 @@ $ ./init_defaults.sh
 $ export BUILD_TOOLS="/home/user/android-sdk-linux/build-tools/28.0.1/"
 
 $ export PLATFORM="/home/user/android-sdk-linux/platforms/android-28/android.jar"
+$ alias build_apk=$PWD/build.sh 
 
-$ ./build.sh init test
-$ ./build.sh build test
+mv to_project_dir_and_run 
+$ build_apk
 ```
 
 In order to copy apk from docker (if needed) following commands should be executed from another shell window:
