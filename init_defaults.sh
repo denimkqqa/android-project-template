@@ -8,3 +8,7 @@ $ANDROID_HOME/tools/bin/sdkmanager "build-tools;28.0.1"
 
 echo "Caching default keystore"
 cp debug.keystore $ANDROID_HOME/
+
+echo "Installing kotlinc"
+curl -s https://get.sdkman.io | bash
+sdk install kotlin
