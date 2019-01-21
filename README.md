@@ -18,5 +18,5 @@ unzip HelloWorld -d / && cd /HelloWorld
 In order to copy apk from docker (if needed) following commands should be executed from another shell window:
 ```
 $ docker ps  # in results there will be container_id in first colum
-$ docker docker cp container_id:/home/user/android-project-template/build/app.apk ~/Downloads/
+$ docker cp container_id:/HelloWorld/build/app.apk ~/Downloads/
 ```
