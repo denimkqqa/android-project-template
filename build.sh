@@ -6,6 +6,8 @@ ZIPALIGN=$BUILD_TOOLS/zipalign
 APKSIGNER=$BUILD_TOOLS/apksigner
 PACKAGE_NAME="com.example.android.helloworld"
 
+root=`dirname $0`
+
 download() {
 	
 	wget -P build/downloads/ https://maven.google.com/android/arch/lifecycle/viewmodel/1.1.0/viewmodel-1.1.0.aar
@@ -87,15 +89,14 @@ build() {
 	done
 
 
-	echo "workaround for merging values (as no comand line tools for manual merging)"
-	./gradlew mergeDebugResources
+	echo "Merging values.."
+	java -jar $root/ResourcesMerger.jar -libsDir build/libs -appRes app/src/main/res -outputDirectory build/mergedResources
 
-	echo "Compiling resources"
+	echo "Compiling resources.."
 
 
-	$AAPT compile -o build/outputResources app/build/intermediates/incremental/mergeDebugResources/merged.dir/*/* #using merged values
+	$AAPT compile -o build/outputResources build/mergedResources/*/*
 	$AAPT compile -o build/outputResources app/src/main/res/*/* 
-
 
 	ls -d -1 $PWD/build/outputResources/*.* | awk 1 ORS=' ' > build/r_files.txt
 	
